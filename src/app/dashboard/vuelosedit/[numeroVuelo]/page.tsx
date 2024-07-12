@@ -28,20 +28,48 @@ function VuelosEdit({ params }: { params: { numeroVuelo: string } }) {
     setEstado('Disponible');
   }, [params.numeroVuelo]);
 
-  const handleActualizar = async () => {
-    if (vuelo) {
-      try {
-        // Convertir la fecha al formato correcto
-        const formattedHoraSalida = new Date(horaSalida).toISOString().slice(0, 19).replace('T', ' ');
+  // const handleActualizar = async () => {
+  //   if (vuelo) {
+  //     try {
+  //       // Convertir la fecha al formato correcto
+  //       const formattedHoraSalida = new Date(horaSalida).toISOString().slice(0, 19).replace('T', ' ');
         
-        const response = await actualizarVuelo(vuelo.numero_vuelo, destino, formattedHoraSalida, estado);
+  //       const response = await actualizarVuelo(vuelo.numero_vuelo, destino, formattedHoraSalida, estado);
+  //       alert('Vuelo actualizado exitosamente');
+  //     } catch (error) {
+  //       console.error('Error al actualizar vuelo:', error);
+  //       alert('Error al actualizar vuelo');
+  //     }
+  //   }
+  // };
+
+  const handleActualizar = async () => {
+    try {
+        const formattedHoraSalida = new Date(horaSalida).toISOString().slice(0, 19).replace('T', ' ');
+
+        const response = await fetch(`http://localhost:8000/vuelos/update/${params.numeroVuelo}`, {
+            method: 'PUT', // O PATCH dependiendo de tu API
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                destino,
+                hora_salida: formattedHoraSalida,
+                estado,
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Error al actualizar el vuelo');
+        }
+
+        console.log('Vuelo actualizado exitosamente');
         alert('Vuelo actualizado exitosamente');
-      } catch (error) {
-        console.error('Error al actualizar vuelo:', error);
-        alert('Error al actualizar vuelo');
-      }
+    } catch (error) {
+        console.error('Error al actualizar el vuelo:', error);
+        alert('Error al actualizar el vuelo');
     }
-  };
+};
 
   if (!vuelo) {
     return <div>Cargando...</div>;

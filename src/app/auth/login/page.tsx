@@ -48,7 +48,7 @@ function LoginPage() {
           value:true,
           message:'Email is required'
         },
-        })} className='border border-slate-500 p-2 mb-4 w-full' />
+        })} className='border border-slate-500 p-2 mb-4 w-full text-black' />
         {errors.email && 
           (<span className="text-red-500 text-xs">
             {errors.email.message}
@@ -63,7 +63,7 @@ function LoginPage() {
           value:true,
           message:'Password is required'
         },
-        })} className='border border-slate-500 p-2 mb-4 w-full' />
+        })} className='border border-slate-500 p-2 mb-4 w-full text-black' />
         {errors.password && (
           <span className="text-red-500 text-sm">
             {errors.password.message}

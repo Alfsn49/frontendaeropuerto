@@ -23,23 +23,51 @@ export default function Register() {
 
     console.log(errors);
 
-    const onSubmit:SubmitHandler<Inputs> = async (data) => {
+    // const onSubmit:SubmitHandler<Inputs> = async (data) => {
+    //     console.log(data);
+    //     try{
+    //         const formattedHoraSalida = new Date(data.hora_salida).toISOString().slice(0, 19).replace('T', ' ');
+            
+    //         const response = await registrarVuelo(
+    //             data.numero_vuelo,
+    //             data.destino,
+    //             formattedHoraSalida,
+    //             data.estado
+    //         );
+    //         console.log('Respuesta del servidor:', response);
+    //     }catch(error){
+    //         console.error('Error al enviar el formulario',error)
+    //     }
+    // };
+
+    const onSubmit: SubmitHandler<Inputs> = async (data) => {
         console.log(data);
-        try{
+        try {
             const formattedHoraSalida = new Date(data.hora_salida).toISOString().slice(0, 19).replace('T', ' ');
             
-            const response = await registrarVuelo(
-                data.numero_vuelo,
-                data.destino,
-                formattedHoraSalida,
-                data.estado
-            );
-            console.log('Respuesta del servidor:', response);
-        }catch(error){
-            console.error('Error al enviar el formulario',error)
+            const response = await fetch('http://localhost:8000/vuelos/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    numero_vuelo: data.numero_vuelo,
+                    destino: data.destino,
+                    hora_salida: data.hora_salida,
+                    estado: data.estado,
+                }),
+            });
+            
+            if (!response.ok) {
+                throw new Error('Error en la respuesta del servidor');
+            }
+
+            const responseData = await response.json();
+            console.log('Respuesta del servidor:', responseData);
+        } catch (error) {
+            console.error('Error al enviar el formulario', error);
         }
     };
-
     return (
         <>
             <h1>Registro de vuelo</h1>
