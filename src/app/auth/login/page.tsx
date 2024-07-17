@@ -33,6 +33,7 @@ function LoginPage() {
   });
   return (
     <div className="h-[calc(100vh-7rem)] flex justify-center items-center">
+      <img src="https://static-00.iconduck.com/assets.00/user-login-icon-1948x2048-nocsasoq.png" alt="" width="200px" className='px-10' />
       <form onSubmit={onSubmit} action="">
       {error && (
           <p className="bg-red-500 text-lg text-white p-3 rounded mb-2">{error}</p>

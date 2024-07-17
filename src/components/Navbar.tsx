@@ -1,7 +1,10 @@
+
 import React from 'react'
 import Link from 'next/link'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
+import { signOut } from 'next-auth/react'
+import ClientButton from '@/app/layout/page'
 
 async function Navbar() {
   const session = await getServerSession(authOptions)
@@ -37,6 +40,9 @@ async function Navbar() {
             </li>
             <li>
               <Link href="/dashboard/vuelosedit">Editar Vuelos </Link>
+            </li>
+            <li>
+              <ClientButton />
             </li> 
               </>
             )}

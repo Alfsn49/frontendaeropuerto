@@ -14,68 +14,10 @@ interface Vuelo {
 
 const Vuelos: React.FC = () => {
   const [vuelos, setVuelos] = useState<Vuelo[]>([]);
+  const [loading, setLoading] = useState(true);
   const router = useRouter()
 
-  // useEffect(() => {
-  //   const fetchVuelos = async () => {
-  //     try {
-  //       const response = await fetch('http://localhost:8000/', {
-  //         method: 'POST',
-  //         headers: {
-  //           'Content-Type': 'text/xml',
-            
-  //         },
-  //         body: `<?xml version="1.0"?>
-  //           <methodCall>
-  //             <methodName>consultar_vuelos</methodName>
-  //             <params></params>
-  //           </methodCall>`,
-            
-  //       } );
-
-  //       if (!response.ok) {
-  //         throw new Error('Network response was not ok');
-  //       }
-
-  //       const text = await response.text();
-  //       console.log(text); // Imprime la respuesta en texto para depuración
-
-  //       const parser = new DOMParser();
-  //       const xmlDoc = parser.parseFromString(text, "text/xml");
-
-  //       const vuelosArray: Vuelo[] = [];
-  //       const values = xmlDoc.getElementsByTagName("value");
-
-  //       for (let i = 0; i < values.length; i++) {
-  //         const struct = values[i].getElementsByTagName("struct")[0];
-  //         if (struct) {
-  //           const id = parseInt(struct.getElementsByTagName("int")[0].textContent || '0');
-  //           const numero_vuelo = struct.getElementsByTagName("string")[0].textContent || '';
-  //           const destino = struct.getElementsByTagName("string")[1].textContent || '';
-  //           const hora_salida = struct.getElementsByTagName("string")[2].textContent || '';
-  //           const estado = struct.getElementsByTagName("string")[3].textContent || '';
-            
-  //           // Verifica si ya existe un vuelo con el mismo ID antes de agregarlo
-  //           if (!vuelosArray.some(v => v.id === id)) {
-  //             vuelosArray.push({ id, numero_vuelo, destino, hora_salida, estado });
-  //           }
-  //         }
-  //       }
-
-  //       setVuelos(vuelosArray);
-  //     } catch (error) {
-  //       console.error('Error al obtener vuelos:', error);
-  //     }
-  //   };
-
-  //   fetchVuelos();
-  // }, []);
-
-  // const handleCancelar = (id: number) => {
-  //   // Lógica para cancelar el vuelo con el ID dado
-  //   console.log(`Cancelar vuelo con ID: ${id}`);
-  // };
-
+  
   useEffect(() => {
     const fetchVuelos = async () => {
       try {
@@ -94,6 +36,8 @@ const Vuelos: React.FC = () => {
         setVuelos(data);
       } catch (error) {
         console.error('Error al obtener vuelos:', error);
+      } finally{
+        setLoading(false);
       }
     };
 
@@ -122,18 +66,28 @@ const Vuelos: React.FC = () => {
       // Aquí puedes manejar el error, mostrar un mensaje de error, etc.
     }
   };
+  if (loading) {
+    return <p>Cargando vuelos...</p>;
+  }
 
   return (
-    <div>
-      <h1>Lista de Vuelos</h1>
-      <ul>
+    <div className="mx-auto max-w-3xl p-4 bg-white shadow-md rounded-lg">
+      <h1 className="text-3xl font-bold mb-4">Lista de Vuelos</h1>
+      <ul className="divide-y divide-gray-200">
         {vuelos.map((vuelo) => (
-          <li key={vuelo.id}>
-            {vuelo.numero_vuelo} - {vuelo.destino} - {vuelo.hora_salida} - {vuelo.estado} 
-            <Link href={`/dashboard/vuelosedit/${vuelo.numero_vuelo}`} passHref>
-              <button>Editar</button>
-            </Link>
-            <button onClick={() => handleCancelar(vuelo.numero_vuelo)}>Cancelar</button>
+          <li key={vuelo.id} className="py-4 flex items-center justify-between">
+            <div className="flex flex-col">
+              <span className="text-xl font-semibold">{vuelo.numero_vuelo}</span>
+              <span className="text-gray-600">{vuelo.destino}</span>
+              <span className="text-gray-600">{vuelo.hora_salida}</span>
+              <span className="text-gray-600">{vuelo.estado}</span>
+            </div>
+            <div className="flex gap-2">
+              <Link href={`/dashboard/vuelosedit/${vuelo.numero_vuelo}`} passHref>
+                <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Editar</button>
+              </Link>
+              <button className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600" onClick={() => handleCancelar(vuelo.numero_vuelo)}>Cancelar</button>
+            </div>
           </li>
         ))}
       </ul>
